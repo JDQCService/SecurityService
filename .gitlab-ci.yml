@@ -1,0 +1,23 @@
+image: maven:3.8-openjdk-11-slim
+
+stages:
+  - build
+  - test
+
+cache:
+  paths:
+    - .m2/repository
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository "
+
+package:
+  stage: build
+  script:
+    - mvn -DskipTests package
+
+unit-test:
+  stage: test
+  script:
+    - mvn test
+
