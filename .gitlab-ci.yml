@@ -29,7 +29,6 @@ unit-test:
 
 docker-image:
   stage: release
-  image: docker:stable
   tags:
     - builder
   only:
