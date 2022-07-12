@@ -30,9 +30,13 @@ unit-test:
 docker-image:
   stage: release
   image: docker:stable
+  tags:
+    - builder
   only:
     - main
+  before_script:
+    - docker info
   script:
-    - docker pull $TARGET_IMAGE || true # for docker build caching
+    - docker pull $TARGET_IMAGE || true # for docker build caching if allowed
     - docker build --cache-from $TARGET_IMAGE --tag $TARGET_IMAGE .
     - docker push $TARGET_IMAGE
