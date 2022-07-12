@@ -24,10 +24,10 @@ unit-test:
 
 docker-image:
   stage: release
+  image: docker:latest
   only:
     - main
   script:
     - docker build -t SecurityService:latest .
-    - docker tag jdqc.local:5000/SecurityService:latest
-    - docker push jdqc.local:5000/SecurityService:latest
-
+    - docker tag 192.168.8.4:5000/SecurityService:latest
+    - docker push 192.168.8.4:5000/SecurityService:latest
