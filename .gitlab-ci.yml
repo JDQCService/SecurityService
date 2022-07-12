@@ -3,6 +3,7 @@ image: maven:3.8-openjdk-11-slim
 stages:
   - build
   - test
+  - release
 
 cache:
   paths:
@@ -20,4 +21,13 @@ unit-test:
   stage: test
   script:
     - mvn test
+
+docker-image:
+  stage: release
+  only:
+    - main
+  script:
+    - docker build -t SecurityService:latest .
+    - docker tag jdqc.local:5000/SecurityService:latest
+    - docker push jdqc.local:5000/SecurityService:latest
 
