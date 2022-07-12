@@ -1,9 +1,8 @@
-image: maven:3.8-openjdk-11-slim
-
 stages:
   - build
   - test
   - release
+  - deploy
 
 cache:
   paths:
@@ -11,23 +10,29 @@ cache:
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository "
+  TARGET_IMAGE: $REGISTRY_ADDR/jdqc/security-service:latest
 
 package:
   stage: build
+  image: maven:3.8-openjdk-11-slim
   script:
     - mvn -DskipTests package
+  artifacts:
+    paths:
+      - target/
 
 unit-test:
   stage: test
+  image: maven:3.8-openjdk-11-slim
   script:
     - mvn test
 
 docker-image:
   stage: release
-  image: docker:latest
+  image: docker:stable
   only:
     - main
   script:
-    - docker build -t SecurityService:latest .
-    - docker tag 192.168.8.4:5000/SecurityService:latest
-    - docker push 192.168.8.4:5000/SecurityService:latest
+    - docker pull $TARGET_IMAGE || true # for docker build caching
+    - docker build --cache-from $TARGET_IMAGE --tag $TARGET_IMAGE .
+    - docker push $TARGET_IMAGE
