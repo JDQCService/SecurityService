@@ -15,6 +15,8 @@ variables:
 package:
   stage: build
   image: maven:3.8-openjdk-11-slim
+  tags:
+    - docker # Runner with docker executor
   script:
     - mvn -DskipTests package
   artifacts:
@@ -24,13 +26,15 @@ package:
 unit-test:
   stage: test
   image: maven:3.8-openjdk-11-slim
+  tags:
+    - docker
   script:
     - mvn test
 
 docker-image:
   stage: release
   tags:
-    - builder
+    - builder # Special runner for building docker image
   only:
     - main
   before_script:
